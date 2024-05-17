@@ -3,11 +3,13 @@ from cProfile import label
 import tkinter
 from tkinter import *
 import string
+import statsmodels.api as sm
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from scipy import stats
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LinearRegression, LogisticRegression
@@ -136,6 +138,7 @@ def RIDGEREG():
     ay=[metrics.mean_squared_error(y_test,y_hat)]
     az=[np.sqrt(metrics.mean_squared_error(y_test,y_hat))]
     validation()
+    return reg
 #######################################################
 df_class = pd.read_csv("student_exam_data.csv")
 df_class.head()
@@ -253,6 +256,11 @@ def confusmtrx():
         xNAIVE=ac2[0]
         la3=Label(app,text=f"{xNAIVE} naive")
         la3.grid(row=12,column=0)
+####################################################################
+x2 = sm.add_constant(X)
+models = sm.OLS(y,x2)
+result = models.fit()
+print (result.summary())
 ##################################################################################################################
 app.geometry("1280x720")
 label1=Label(app,text="Project",font=('Times New Roman','20'))
