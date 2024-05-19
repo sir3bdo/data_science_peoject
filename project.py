@@ -59,8 +59,8 @@ df.duplicated().sum()
 df.describe()
 df.columns
 ##################################################
-#Data Visualization
-#Plotting Data individually
+# Data Visualization
+# Plotting Data individually
 Gender = df['sex'].value_counts()
 plt.pie(Gender, labels=['Females', 'Males'], autopct='%.1f%%')
 plt.title('Gender Pie Chart')
@@ -116,29 +116,41 @@ y_hat = model1.predict(X_test)
 print('MSE :' , mean_squared_error(y_test, y_hat))
 plt.scatter(y_test, y_hat)
 print('r2_score = ',r2_score(y_test, y_hat))
+
 ######################################################
+# Ridge Regression
 def RIDGEREG():
-    global flag
-    global ac3
-    global lisreg
-    global ax
-    global az
-    global ay
-    flag.append(4)
-    y = df['fy_gpa']
-    X = df.drop(['fy_gpa'], axis=1)
+    # Global variables
+    global flag  # Indicator flag
+    global ac3  # List to store evaluation metrics
+    global lisreg  # List to store regression model information
+    global ax  # List to store mean absolute error
+    global az  # List to store root mean squared error
+    global ay  # List to store mean squared error
+
+    flag.append(4)  # Append value 4 to the flag list
+
+    y = df['fy_gpa']  # Target variable
+    X = df.drop(['fy_gpa'], axis=1)  # Features
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-    reg = linear_model.Ridge(alpha=0.01, fit_intercept=True)
-    reg.fit(X_train, y_train) 
-    y_hat = reg.predict(X_test)
+    # Split the data into training and test sets
+
+    reg = linear_model.Ridge(alpha=0.01, fit_intercept=True)  # Create a Ridge regression object
+    reg.fit(X_train, y_train)  # Fit the regression model using training data
+    y_hat = reg.predict(X_test)  # Predict the target variable for test data
+
     #print('MSE :' , mean_squared_error(y_test, y_hat))
-    plt.scatter(y_test, y_hat)
-    print('R2 :' , r2_score(y_test, y_hat))
-    ax=[metrics.mean_absolute_error(y_test,y_hat)]
-    ay=[metrics.mean_squared_error(y_test,y_hat)]
-    az=[np.sqrt(metrics.mean_squared_error(y_test,y_hat))]
-    validation()
-    return reg
+    plt.scatter(y_test, y_hat)  # Scatter plot of predicted vs. actual values
+    print('R2 :' , r2_score(y_test, y_hat))  # Compute R2 score
+
+    ax = [metrics.mean_absolute_error(y_test, y_hat)]  # Compute and store mean absolute error
+    ay = [metrics.mean_squared_error(y_test, y_hat)]  # Compute and store mean squared error
+    az = [np.sqrt(metrics.mean_squared_error(y_test, y_hat))]  # Compute and store root mean squared error
+
+    validation()  # Call the validation function
+
+    return reg  # Return the regression model
+
 #######################################################
 df_class = pd.read_csv("student_exam_data.csv")
 df_class.head()
@@ -149,47 +161,73 @@ y_class = df_class['Pass/Fail']
 X_class =  df_class.drop(['Pass/Fail'], axis=1)
 X_train_cl, X_test_cl, y_train_cl, y_test_cl = train_test_split(X_class, y_class, test_size=0.2,random_state=0)
 y_class.value_counts()
+
 ##############################################################################################
-#Logistic Regression
+# Logistic Regression
 def LOGISTIC():
-    global flag
-    global ac
-    flag.append(2)
-    LR=LogisticRegression()
-    LR.fit(X_train_cl,y_train_cl)
-    y_pred= LR.predict(X_test_cl)
-    accuracy_score(y_test_cl,y_pred)
-    f1_score(y_test_cl,y_pred)
-    print(classification_report(y_test_cl,y_pred))
-    print(confusion_matrix(y_test_cl,y_pred))
-    ac=[confusion_matrix(y_test_cl,y_pred), metrics.accuracy_score(y_pred,y_test_cl)]
-    validation()
+    # Global variables
+    global flag     # Indicator flag
+    global ac       # List to store confusion matrix and accuracy
+
+    flag.append(2)  # Append value 2 to the flag list
+
+    # Logistic Regression
+    LR = LogisticRegression()       # Create a LogisticRegression object
+    LR.fit(X_train_cl,y_train_cl)   # Fit the model using training data
+    y_pred = LR.predict(X_test_cl)  # Predict the labels for test data
+
+    # Evaluation Metrics
+    accuracy_score(y_test_cl,y_pred)    # Compute accuracy score, but not assigned to a variable
+    f1_score(y_test_cl,y_pred)           # Compute F1 score, but not assigned to a variable
+    print(classification_report(y_test_cl,y_pred))      # Print classification report
+    print(confusion_matrix(y_test_cl,y_pred))            # Print confusion matrix
+    ac = [confusion_matrix(y_test_cl,y_pred), metrics.accuracy_score(y_pred,y_test_cl)]     # Store confusion matrix and accuracy in the ac list
+    validation()        # Call the validation function
+
 #########################################################
+# K-nearest neighboorhood
 def KNN():
-    global flag
-    global ac1
-    flag.append(1)
-    from sklearn.neighbors import KNeighborsClassifier
-    KNN= KNeighborsClassifier(n_neighbors=3)
-    KNN.fit(X_train_cl, y_train_cl)
-    y_knn_pred = KNN.predict(X_test_cl)
-    f1_score(y_test_cl, y_knn_pred)
-    from sklearn.metrics import classification_report,confusion_matrix
-    validation()
-    ac1=[confusion_matrix(y_test_cl,y_knn_pred), metrics.accuracy_score(y_knn_pred,y_test_cl)]
+    # Global variables
+    global flag  # Indicator flag
+    global ac1  # List to store confusion matrix and accuracy
+
+    flag.append(1)  # Append value 1 to the flag list
+
+    from sklearn.neighbors import KNeighborsClassifier  # Import KNeighborsClassifier
+    KNN = KNeighborsClassifier(n_neighbors=3)  # Create a KNeighborsClassifier object with 3 neighbors
+    KNN.fit(X_train_cl, y_train_cl)  # Fit the model using training data
+    y_knn_pred = KNN.predict(X_test_cl)  # Predict the labels for test data
+
+    f1_score(y_test_cl, y_knn_pred)  # Compute F1 score, but not assigned to a variable
+
+    from sklearn.metrics import classification_report, confusion_matrix  # Import classification_report and confusion_matrix
+    validation()  # Call the validation function
+
+    ac1 = [confusion_matrix(y_test_cl, y_knn_pred), metrics.accuracy_score(y_knn_pred, y_test_cl)]
+    # Store confusion matrix and accuracy in the ac1 list
+
 ######################################################
+# Naive Bayes
 def navyby():
-    global dsn
-    global flag
-    global ac2
-    flag.append(3)
-    from sklearn.naive_bayes import GaussianNB
-    Naive_Bayes = GaussianNB()
-    Naive_Bayes.fit(X_train_cl, y_train_cl)
-    y_NB_pred = Naive_Bayes.predict(X_test_cl)
-    f1_score(y_test_cl, y_NB_pred)
-    validation()
-    ac2=[metrics.confusion_matrix(y_test_cl, y_NB_pred), metrics.accuracy_score(y_NB_pred,y_test_cl)]
+    # Global variables
+    global dsn  # Dataset variable
+    global flag  # Indicator flag
+    global ac2  # List to store confusion matrix and accuracy
+
+    flag.append(3)  # Append value 3 to the flag list
+
+    from sklearn.naive_bayes import GaussianNB  # Import GaussianNB
+    Naive_Bayes = GaussianNB()  # Create a GaussianNB object
+    Naive_Bayes.fit(X_train_cl, y_train_cl)  # Fit the model using training data
+    y_NB_pred = Naive_Bayes.predict(X_test_cl)  # Predict the labels for test data
+
+    f1_score(y_test_cl, y_NB_pred)  # Compute F1 score, but not assigned to a variable
+
+    validation()  # Call the validation function
+
+    ac2 = [metrics.confusion_matrix(y_test_cl, y_NB_pred), metrics.accuracy_score(y_NB_pred, y_test_cl)]
+    # Store confusion matrix and accuracy in the ac2 list
+
 #####################################################
 def Regression():
     label7=Label(app,text="Linear Regression",font=('Times New Roman','10'))
@@ -211,51 +249,66 @@ def Classification():
     label6.grid(column=3,row=5)
     button6=customtkinter.CTkButton(app, text="click",width=7,height=1,command=navyby)
     button6.grid(column=4,row=5)
+
 ########################################################################################################
+# Accuracy calculation
 def acure():
-    global dic1
-    global dic
-    global flag
-    global ax
-    global ay
-    global az
+    # Global variables
+    global dic1  # Dictionary to store regression error metrics
+    global dic  # Dictionary to store classification accuracy
+    global flag  # Indicator flag
+    global ax  # List to store mean absolute error
+    global ay  # List to store mean squared error
+    global az  # List to store root mean squared error
+
     if 1 in flag:
-        dic["KNN"]=[ac1[1]]
-    if 2 in flag :
-        dic["LOGISTIC"]=[ac[1]]
+        dic["KNN"] = [ac1[1]]  # Store KNN accuracy in the dic dictionary
+
+    if 2 in flag:
+        dic["LOGISTIC"] = [ac[1]]  # Store Logistic accuracy in the dic dictionary
+
     if 3 in flag:
-        dic["niavyby"]=[ac2[1]]
+        dic["niavyby"] = [ac2[1]]  # Store Naive Bayes accuracy in the dic dictionary
+    
     if 4 in flag:
-        dic1["MEAN ABS ERROR"]=ax
-        dic1["MEAN SQUARE ERROR"]=ay
-        dic1["MEAN root ERROR"]=az
-        pf2=pd.DataFrame(data=dic1)
-        fig2=pf2.plot.bar().get_figure();
-        bar2 =FigureCanvasTkAgg(fig2,app)
-        bar2.get_tk_widget().grid(column=9,row=13)
-    pf=pd.DataFrame(data=dic)
-    fig=pf.plot.bar().get_figure();
-    bar1 =FigureCanvasTkAgg(fig,app)
-    bar1.get_tk_widget().grid(column=5,row=13)
+        dic1["MEAN ABS ERROR"] = ax  # Store mean absolute error in the dic1 dictionary
+        dic1["MEAN SQUARE ERROR"] = ay  # Store mean squared error in the dic1 dictionary
+        dic1["MEAN root ERROR"] = az  # Store root mean squared error in the dic1 dictionary
+        pf2 = pd.DataFrame(data=dic1)  # Create a DataFrame from dic1
+        fig2 = pf2.plot.bar().get_figure()  # Plot a bar chart from the DataFrame
+        bar2 = FigureCanvasTkAgg(fig2, app)  # Create a Tkinter canvas for the bar chart
+        bar2.get_tk_widget().grid(column=9, row=13)  # Place the bar chart in the grid layout of the app
+
+    pf = pd.DataFrame(data=dic)  # Create a DataFrame from dic
+    fig = pf.plot.bar().get_figure()  # Plot a bar chart from the DataFrame
+    bar1 = FigureCanvasTkAgg(fig, app)  # Create a Tkinter canvas for the bar chart
+    bar1.get_tk_widget().grid(column=5, row=13)  # Place the bar chart in the grid layout of the app
+
 ####################################################################################################################
+# Confusion Matrix Calculation
 def confusmtrx():
-    global flag
-    global xKNN
-    global xLINREG
-    global xDECTREE
-    global xNAIVE
+    # Global variables
+    global flag  # Indicator flag
+    global xKNN  # Confusion matrix for KNN
+    global xLINREG  # Confusion matrix for logistic regression
+    global xDECTREE  # Confusion matrix for decision tree
+    global xNAIVE  # Confusion matrix for naive Bayes
+
     if 1 in flag:
-        xKNN=ac1[0]
-        la1=Label(app,text=f"{xKNN} KNN")
-        la1.grid(row=10,column=0)
-    if 2 in flag :
-        Xlogistic=ac[0]
-        la2=Label(app,text=f"{Xlogistic} logistic")
-        la2.grid(row=11,column=0)
+        xKNN = ac1[0]  # Assign the KNN confusion matrix to xKNN
+        la1 = Label(app, text=f"{xKNN} KNN")  # Create a label to display the KNN confusion matrix
+        la1.grid(row=10, column=0)  # Place the label in the grid layout of the app
+
+    if 2 in flag:
+        xLINREG = ac[0]  # Assign the logistic regression confusion matrix to xLINREG
+        la2 = Label(app, text=f"{xLINREG} logistic")  # Create a label to display the logistic regression confusion matrix
+        la2.grid(row=11, column=0)  # Place the label in the grid layout of the app
+
     if 3 in flag:
-        xNAIVE=ac2[0]
-        la3=Label(app,text=f"{xNAIVE} naive")
-        la3.grid(row=12,column=0)
+        xNAIVE = ac2[0]  # Assign the naive Bayes confusion matrix to xNAIVE
+        la3 = Label(app, text=f"{xNAIVE} naive")  # Create a label to display the naive Bayes confusion matrix
+        la3.grid(row=12, column=0)  # Place the label in the grid layout of the app
+
 ####################################################################
 x2 = sm.add_constant(X)
 models = sm.OLS(y,x2)
