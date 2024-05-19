@@ -39,18 +39,30 @@ customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("blue")
 app = customtkinter.CTk()
 
-############################################################################################################## 
+##############################################################################################################
+# Validation GUI 
 def validation():
-    label8=Label(app,text="validation",font=('Times New Roman','20'))
-    label8.grid(column=0,row=7)
-    label9=Label(app,text="Confusion Matrix",font=('Times New Roman','10'))
-    label9.grid(column=0,row=8)
-    button8=customtkinter.CTkButton(app, text="click",width=7,height=1,command=confusmtrx)
-    button8.grid(column=1,row=8)
-    label10=Label(app,text="Accuracy",font=('Times New Roman','10'))
-    label10.grid(column=2,row=8)
-    button9=customtkinter.CTkButton(app, text="click",width=7,height=1,command=acure)
-    button9.grid(column=3,row=8)
+    # Global variable
+    global app
+
+    # Create label for validation
+    label8 = Label(app, text="Validation", font=('Times New Roman', '20'))
+    label8.grid(column=0, row=7)  # Place the label in the grid layout of the app
+
+    # Create label for Confusion Matrix
+    label9 = Label(app, text="Confusion Matrix", font=('Times New Roman', '10'))
+    label9.grid(column=0, row=8)  # Place the label in the grid layout of the app
+    # Create button for Confusion Matrix
+    button8 = customtkinter.CTkButton(app, text="click", width=7, height=1, command=confusmtrx)
+    button8.grid(column=1, row=8)  # Place the button in the grid layout of the app
+
+    # Create label for Accuracy
+    label10 = Label(app, text="Accuracy", font=('Times New Roman', '10'))
+    label10.grid(column=2, row=8)  # Place the label in the grid layout of the app
+    # Create button for Accuracy
+    button9 = customtkinter.CTkButton(app, text="click", width=7, height=1, command=acure)
+    button9.grid(column=3, row=8)  # Place the button in the grid layout of the app
+
 ###################################################
 df = pd.read_csv("satgpa.csv", encoding='latin-1')
 df.head()
@@ -58,6 +70,7 @@ df.isna().sum()
 df.duplicated().sum()
 df.describe()
 df.columns
+
 ##################################################
 # Data Visualization
 # Plotting Data individually
@@ -151,7 +164,8 @@ def RIDGEREG():
 
     return reg  # Return the regression model
 
-#######################################################
+######################################################################################
+
 df_class = pd.read_csv("student_exam_data.csv")
 df_class.head()
 df_class.columns
@@ -184,7 +198,7 @@ def LOGISTIC():
     ac = [confusion_matrix(y_test_cl,y_pred), metrics.accuracy_score(y_pred,y_test_cl)]     # Store confusion matrix and accuracy in the ac list
     validation()        # Call the validation function
 
-#########################################################
+##################################################################################
 # K-nearest neighboorhood
 def KNN():
     # Global variables
@@ -193,20 +207,18 @@ def KNN():
 
     flag.append(1)  # Append value 1 to the flag list
 
-    from sklearn.neighbors import KNeighborsClassifier  # Import KNeighborsClassifier
     KNN = KNeighborsClassifier(n_neighbors=3)  # Create a KNeighborsClassifier object with 3 neighbors
     KNN.fit(X_train_cl, y_train_cl)  # Fit the model using training data
     y_knn_pred = KNN.predict(X_test_cl)  # Predict the labels for test data
 
     f1_score(y_test_cl, y_knn_pred)  # Compute F1 score, but not assigned to a variable
 
-    from sklearn.metrics import classification_report, confusion_matrix  # Import classification_report and confusion_matrix
     validation()  # Call the validation function
 
     ac1 = [confusion_matrix(y_test_cl, y_knn_pred), metrics.accuracy_score(y_knn_pred, y_test_cl)]
     # Store confusion matrix and accuracy in the ac1 list
 
-######################################################
+###########################################################################################
 # Naive Bayes
 def navyby():
     # Global variables
@@ -216,7 +228,6 @@ def navyby():
 
     flag.append(3)  # Append value 3 to the flag list
 
-    from sklearn.naive_bayes import GaussianNB  # Import GaussianNB
     Naive_Bayes = GaussianNB()  # Create a GaussianNB object
     Naive_Bayes.fit(X_train_cl, y_train_cl)  # Fit the model using training data
     y_NB_pred = Naive_Bayes.predict(X_test_cl)  # Predict the labels for test data
@@ -228,27 +239,45 @@ def navyby():
     ac2 = [metrics.confusion_matrix(y_test_cl, y_NB_pred), metrics.accuracy_score(y_NB_pred, y_test_cl)]
     # Store confusion matrix and accuracy in the ac2 list
 
-#####################################################
+######################################################################################################
+# Regression GUI
 def Regression():
-    label7=Label(app,text="Linear Regression",font=('Times New Roman','10'))
-    label7.grid(column=0,row=3)
-    button7=customtkinter.CTkButton(app, text="click",width=7,height=1,command=RIDGEREG)
-    button7.grid(column=1,row=3)
-#######################################################################################
-def Classification():
+    # Global variable
     global app
-    label4=Label(app,text="KNN",font=('Times New Roman','10'))
-    label4.grid(column=3,row=3)
-    button4=customtkinter.CTkButton(app, text="click",width=7,height=1,command=KNN)
-    button4.grid(column=4,row=3)
-    label5=Label(app,text="logistic reg ",font=('Times New Roman','10'))
-    label5.grid(column=3,row=4)
-    button5=customtkinter.CTkButton(app, text="click",width=7,height=1,command=LOGISTIC)
-    button5.grid(column=4,row=4)
-    label6=Label(app,text="Naïve Bayes",font=('Times New Roman','10'))
-    label6.grid(column=3,row=5)
-    button6=customtkinter.CTkButton(app, text="click",width=7,height=1,command=navyby)
-    button6.grid(column=4,row=5)
+
+    #  Create label for Linear Regression
+    label7 = Label(app,text="Linear Regression",font=('Times New Roman','10'))
+    label7.grid(column=0,row=3)  # Place the label in the grid layout of the app
+    #  Create button for Linear Regression
+    button7 = customtkinter.CTkButton(app, text="click",width=7,height=1,command=RIDGEREG)
+    button7.grid(column=1,row=3)  # Place the button in the grid layout of the app
+
+#######################################################################################
+# Classification GUI
+def Classification():
+    # Global variable
+    global app
+
+    # Create label for KNN
+    label4 = Label(app, text="KNN", font=('Times New Roman', '10'))
+    label4.grid(column=3, row=3)  # Place the label in the grid layout of the app
+    # Create button for KNN
+    button4 = customtkinter.CTkButton(app, text="click", width=7, height=1, command=KNN)
+    button4.grid(column=4, row=3)  # Place the button in the grid layout of the app
+
+    # Create label for logistic regression
+    label5 = Label(app, text="Logistic Regression", font=('Times New Roman', '10'))
+    label5.grid(column=3, row=4)  # Place the label in the grid layout of the app
+    # Create button for logistic regression
+    button5 = customtkinter.CTkButton(app, text="click", width=7, height=1, command=LOGISTIC)
+    button5.grid(column=4, row=4)  # Place the button in the grid layout of the app
+
+    # Create label for Naive Bayes
+    label6 = Label(app, text="Naïve Bayes", font=('Times New Roman', '10'))
+    label6.grid(column=3, row=5)  # Place the label in the grid layout of the app
+    # Create button for Naive Bayes
+    button6 = customtkinter.CTkButton(app, text="click", width=7, height=1, command=navyby)
+    button6.grid(column=4, row=5)  # Place the button in the grid layout of the app
 
 ########################################################################################################
 # Accuracy calculation
@@ -309,12 +338,13 @@ def confusmtrx():
         la3 = Label(app, text=f"{xNAIVE} naive")  # Create a label to display the naive Bayes confusion matrix
         la3.grid(row=12, column=0)  # Place the label in the grid layout of the app
 
-####################################################################
+
 x2 = sm.add_constant(X)
 models = sm.OLS(y,x2)
 result = models.fit()
 print (result.summary())
-##################################################################################################################
+
+# Creating GUI
 app.geometry("1280x720")
 label1=Label(app,text="Project",font=('Times New Roman','20'))
 label1.grid(column=3,row=0)
