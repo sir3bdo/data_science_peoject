@@ -1,3 +1,4 @@
+# Importing libraries
 import customtkinter, tkinter
 from cProfile import label
 import tkinter
@@ -18,7 +19,9 @@ from sklearn import metrics
 from sklearn import tree
 from sklearn import linear_model
 from sklearn.naive_bayes import GaussianNB
-#################################################
+
+############################################################
+# Declaring some variables
 dsn=None
 dic={}
 flag=[]
@@ -39,7 +42,7 @@ customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("blue")
 app = customtkinter.CTk()
 
-##############################################################################################################
+####################################################################################################
 # Validation GUI 
 def validation():
     # Global variable
@@ -64,47 +67,52 @@ def validation():
     button9.grid(column=3, row=8)  # Place the button in the grid layout of the app
 
 ###################################################
+# Read the CSV file "satgpa.csv" into a DataFrame
 df = pd.read_csv("satgpa.csv", encoding='latin-1')
-df.head()
-df.isna().sum()
-df.duplicated().sum()
-df.describe()
-df.columns
+df.head()               # Display the first few rows of the DataFrame
+df.isna().sum()         # Check the number of missing values in each column of the DataFrame
+df.duplicated().sum()   # Check the number of duplicated rows in the DataFrame
+df.describe()           # Generate descriptive statistics of the DataFrame
+df.columns              # Retrieve the column names of the DataFrame
 
 ##################################################
 # Data Visualization
 # Plotting Data individually
 Gender = df['sex'].value_counts()
+
+# Pie chart showing the percentage of females and males
 plt.pie(Gender, labels=['Females', 'Males'], autopct='%.1f%%')
 plt.title('Gender Pie Chart')
 plt.show()
 
-Sat_V=df['sat_v']
+# Histograms of sat_scores
+Sat_V = df['sat_v']
 plt.hist(Sat_V, bins=20, color='skyblue', edgecolor='black')
 plt.xlabel('Sat_v Grades')
 plt.ylabel('Frequency')
 plt.title('Histogram of Sat_v')
 plt.show()
 
-Sat_m=df['sat_m']
+Sat_m = df['sat_m']
 plt.hist(Sat_m, bins=20, color='skyblue', edgecolor='black')
 plt.xlabel('Sat_m Grades')
 plt.ylabel('Frequency')
 plt.title('Histogram of Sat_m')
 plt.show()
 
-Sat_sum=df['sat_sum']
+Sat_sum = df['sat_sum']
 plt.hist(Sat_sum, bins=20, color='skyblue', edgecolor='black')
 plt.xlabel('Sat_sum Grades')
 plt.ylabel('Frequency')
 plt.title('Histogram of Sat_sum')
 plt.show()
 
+# Box-Plot of hs_gba & fy_gba 
 High_School_GPA=df['hs_gpa']
 First_Year_GPA=df['fy_gpa']
 data = [High_School_GPA,First_Year_GPA]
 sns.boxplot(data)
-plt.show
+plt.show()
 
 # Generate the correlation matrix
 correlation_matrix = df[['sex', 'sat_v', 'sat_m', 'sat_sum', 'hs_gpa', 'fy_gpa']].corr()
@@ -120,14 +128,21 @@ plt.show()
 
 sns.pairplot(df, hue='sex')
 ####################################################
-y = df['fy_gpa']
-X = df.drop(['fy_gpa'], axis=1)
+
+y = df['fy_gpa']                            # Extract the 'fy_gba' column as the target variable
+X = df.drop(['fy_gpa'], axis=1)             # Drop the 'fy_gba' column from the DataFrame and assign the remaining columns to X
+
+# Split the data into training and testing sets, with 80% for training and 20% for testing
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,random_state=0)
-model1 = LinearRegression()
-model1.fit(X_train, y_train) 
-y_hat = model1.predict(X_test)
+model1 = LinearRegression()                 # Create an instance of the LinearRegression model
+model1.fit(X_train, y_train)                # Fit the model using the training data
+y_hat = model1.predict(X_test)              # Predict the target variable using the test data
+
+# Calculate the mean squared error (MSE) between the actual and predicted values
 print('MSE :' , mean_squared_error(y_test, y_hat))
 plt.scatter(y_test, y_hat)
+
+# Calculate the coefficient of determination (R-squared score) between the actual and predicted values
 print('r2_score = ',r2_score(y_test, y_hat))
 
 ######################################################
@@ -165,16 +180,18 @@ def RIDGEREG():
     return reg  # Return the regression model
 
 ######################################################################################
-
+# Read the CSV file "student_exam_data.csv" into a DataFrame
 df_class = pd.read_csv("student_exam_data.csv")
-df_class.head()
-df_class.columns
-df_class.isna().sum()
-df_class.duplicated().sum()
-y_class = df_class['Pass/Fail']
-X_class =  df_class.drop(['Pass/Fail'], axis=1)
+df_class.head()                     # Display the first few rows of the DataFrame
+df_class.columns                    # Retrieve the column names of the DataFrame
+df_class.isna().sum()               # Check the number of missing values in each column of the DataFrame
+df_class.duplicated().sum()         # Check the number of duplicated rows in the DataFrame
+y_class = df_class['Pass/Fail']     # Extract the 'Pass/Fail' column as the target variable
+X_class =  df_class.drop(['Pass/Fail'], axis=1)          # Drop the 'Pass/Fail' column from the DataFrame and assign the remaining columns to X_class
+
+# Split the data into training and testing sets, with 80% for training and 20% for testing
 X_train_cl, X_test_cl, y_train_cl, y_test_cl = train_test_split(X_class, y_class, test_size=0.2,random_state=0)
-y_class.value_counts()
+y_class.value_counts()              # Count the occurrences of each value in the 'Pass/Fail' column
 
 ##############################################################################################
 # Logistic Regression
@@ -338,6 +355,7 @@ def confusmtrx():
         la3 = Label(app, text=f"{xNAIVE} naive")  # Create a label to display the naive Bayes confusion matrix
         la3.grid(row=12, column=0)  # Place the label in the grid layout of the app
 
+##################################################################################################
 
 x2 = sm.add_constant(X)
 models = sm.OLS(y,x2)
@@ -345,15 +363,26 @@ result = models.fit()
 print (result.summary())
 
 # Creating GUI
+# Set the geometry of the app window to 1280x720
 app.geometry("1280x720")
-label1=Label(app,text="Project",font=('Times New Roman','20'))
-label1.grid(column=3,row=0)
-label2=Label(app,text="Regression ",font=('Times New Roman','10'))
-label2.grid(column=0,row=2)
-button2=customtkinter.CTkButton(app, text="click",width=7,height=1,command=Regression)
-button2.grid(column=1,row=2)
-label3=Label(app,text="Classification ",font=('Times New Roman','10'))
-label3.grid(column=3,row=2)
-button3=customtkinter.CTkButton(app, text="click",width=7,height=1,command=Classification)
-button3.grid(column=4,row=2)
+
+# Create a label for the "Project"
+label1 = Label(app, text="Project", font=('Times New Roman', '20'))
+label1.grid(column=3, row=0)
+
+# Create a label for the "Regression"
+label2 = Label(app, text="Regression", font=('Times New Roman', '10'))
+label2.grid(column=0, row=2)
+# Create a button with the "Regression"
+button2 = customtkinter.CTkButton(app, text="click", width=7, height=1, command=Regression)
+button2.grid(column=1, row=2)
+
+# Create a label for the "Classification"
+label3 = Label(app, text="Classification", font=('Times New Roman', '10'))
+label3.grid(column=3, row=2)
+# Create a button for the "Classification"
+button3 = customtkinter.CTkButton(app, text="click", width=7, height=1, command=Classification)
+button3.grid(column=4, row=2)
+
+# Start the main event loop of the app
 app.mainloop()
